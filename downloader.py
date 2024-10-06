@@ -2,10 +2,12 @@ import httpx
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 import subprocess
+import sys
+timeout = httpx.Timeout(30.0)
 
-client = httpx.Client(http2=True)
+client = httpx.Client(http2=True, timeout=timeout)
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0',
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate, br',
     'Dnt': '1',
@@ -25,9 +27,12 @@ playerHeaders = {
 }
 
 print('#####iframe.mediadelivery.net video downloader#####')
-URI = input('Enter URI in the following form [https://iframe.mediadelivery.net/embed/{video_library_id}/{video_id}]\n: ')
-title = input('Enter a title (without extension)\n: ')
+if len(sys.argv) != 3:
+    print("Usage: downloader.py <URI> <title>")
+    sys.exit(1)
 
+URI = sys.argv[1]
+title = sys.argv[2]
 ###to get player HTML.
 player = client.get(URI, headers=playerHeaders).text
 ###
